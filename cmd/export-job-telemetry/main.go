@@ -10,7 +10,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
@@ -71,12 +71,12 @@ func initTracer(endpoint, serviceName string, attrs, headers map[string]string) 
 
 	res := resource.NewWithAttributes(semconv.SchemaURL, resourceAttributes...)
 
-	clientOptions := []otlptracegrpc.Option{
-		otlptracegrpc.WithEndpoint(endpoint),
-		otlptracegrpc.WithHeaders(headers),
+	clientOptions := []otlptracehttp.Option{
+		otlptracehttp.WithHeaders(headers),
+		otlptracehttp.WithEndpoint(endpoint),
 	}
 
-	exp, err := otlptracegrpc.New(context.Background(), clientOptions...)
+	exp, err := otlptracehttp.New(context.Background(), clientOptions...)
 	if err != nil {
 		githubactions.Fatalf("failed to initialize exporter: %v", err)
 	}
